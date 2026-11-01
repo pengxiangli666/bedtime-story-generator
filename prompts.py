@@ -25,7 +25,7 @@ gently reshape it (e.g. a "scary monster" becomes a shy, misunderstood monster).
 
 Request: \"\"\"{request}\"\"\"
 
-If the request does not name a hero, invent one and call them {hero}. If it does, keep the requested name.
+The hero is whoever or whatever the request is about: for "a story about a dragon", the dragon is the main character, so do not add a separate human hero. If the request does not name the hero, call them {hero}. If it does, keep the requested name.
 
 Return ONLY a JSON object with these keys:
 {{
