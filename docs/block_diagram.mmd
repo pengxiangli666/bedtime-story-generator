@@ -1,0 +1,17 @@
+flowchart TD
+    %% Every LLM box calls call_model() -> Claude Haiku 5.5 (claude-haiku-5-5)
+    U([User / Parent]) -->|story request| B
+    subgraph Pipeline["main.py tell_story(): LLM steps call claude-haiku-5-5"]
+        B["1. Brief maker<br/>BRIEF_PROMPT<br/>category, characters, must_keep,<br/>softens unsuitable content,<br/>random hero name if unnamed"]
+        B --> O["2. Outliner<br/>OUTLINE_PROMPT + category strategy<br/>+ random creative spark<br/>6 beats ending in a wind-down"]
+        O --> W["3. Storyteller<br/>WRITE_PROMPT + WRITER_SYSTEM<br/>draft 450-650 words, plain text"]
+        W --> J{"4. Quality gate<br/>LLM judge: evidence, then score<br/>7 criteria, 1-5<br/>+ code checks: length, sentence length"}
+        J -->|"all scores >= 4, safety = 5,<br/>checks pass"| F["Best-ranked draft"]
+        J -->|"fixes, up to 2 rounds"| R["Reviser<br/>REVISE_PROMPT<br/>surgical edit of flagged parts"]
+        R --> J
+        J -->|"rounds exhausted or<br/>judge output unusable"| F
+    end
+    F -->|story| U
+    U -.->|"optional feedback<br/>e.g. 'add a dragon'<br/>(added to must_keep)"| R2["Reviser<br/>REVISE_PROMPT<br/>applies user feedback"]
+    R2 --> J2{"Quality gate once more"}
+    J2 --> F
