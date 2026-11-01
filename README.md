@@ -10,7 +10,7 @@ Requires Python 3.10+.
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=<your key>      # never commit your key; .env is git-ignored
+export ANTHROPIC_API_KEY=<your key>      # the app reads this variable only (it does not load .env); never commit your key
 
 python main.py                            # interactive
 python main.py "A girl named Alice and her best friend Bob, who is a cat" -v   # -v shows scores, fixes, checks
@@ -71,7 +71,7 @@ flowchart TD
   (`PASS_SCORE`, `MAX_ROUNDS`, `WORD_RANGE`, `MAX_AVG_SENTENCE_WORDS` in `main.py`).
 - **Observed in testing:** early on, free-form rewrites sometimes *lowered* scores (a rewrite damaged the ending),
   so the reviser was changed to surgical edits and the loop keeps the best draft.
-- **Variety:** early runs kept producing the same names and refrain, so each run draws a random "creative spark" (sensory detail, side character, small twist, and a hero name when the request gives none) for the outliner and the prompts discourage default names.
+- **Variety:** early runs kept producing the same names and refrain, so each run draws a random "creative spark" (sensory detail, side character, small twist) for the outliner, plus a random hero name for the brief maker when the request names none (the hero is always whoever the request is about).
 - **Graceful failure:** JSON parsing tolerates code fences and retries once; an unusable brief or outline falls back to a
   default; an unusable judge means the draft ships; empty or cut-off model replies are handled (higher token limit, a story that ends mid-sentence is sent back for repair, an empty revision keeps the current draft); API errors give a short message instead of a traceback.
 - **Prompts are all in `prompts.py`**; model access is a single function, `call_model`.
